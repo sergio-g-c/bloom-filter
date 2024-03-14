@@ -1,0 +1,19 @@
+{
+  "name": "bloom-filter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "format": "npx prettier --write **/*'.{ts,json}'",
+    "prebuild": "npm run format",
+    "build": "npx tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.4.2",
+    "@types/node": "^16.18.88",
+    "prettier": "^3.2.5"
+  }
+}

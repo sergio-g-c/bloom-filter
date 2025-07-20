@@ -42,7 +42,7 @@ export default class BloomFilter {
   private hashingAlgorithm: string;
   private filter: Set<number> = new Set();
   public readonly expectedItems: number;
-  public readonly numberOfFunctions: number;
+  public readonly saltArray: Array<number>;
   public readonly maxItems: number;
 
   constructor({
@@ -58,10 +58,10 @@ export default class BloomFilter {
     );
     this.expectedItems = expectedItems ?? 100;
     this.maxItems = maxItems ?? this.expectedItems * 5;
-    this.numberOfFunctions = hashFunctions(
+    this.saltArray = Array(hashFunctions(
       bits(this.expectedItems, desiredFalsePositiveRate ?? 0.01),
       this.maxItems
-    );
+    )).fill(0);
   }
 
   private digest(str: string, salt: string): Buffer {
@@ -73,11 +73,7 @@ export default class BloomFilter {
   }
 
   private calculateItems(str: string): Array<number> {
-    const items = [];
-    for (let i = 0; i < this.numberOfFunctions; i++) {
-      items.push(this.digest(str, i.toString()).readUInt32BE() % this.maxItems);
-    }
-    return items;
+    return this.saltArray.map((_, i) => this.digest(str, i.toString()).readUInt32BE() % this.maxItems);
   }
 
   public add(str: string): void {
